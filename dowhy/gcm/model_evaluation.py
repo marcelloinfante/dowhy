@@ -357,15 +357,24 @@ def evaluate_causal_model(
     :param evaluate_causal_structure: If True, the causal graph structure is evaluated.
     :return: A summary of the evaluation.
     """
+    print(1)
+    
     if config is None:
         config = EvaluateCausalModelConfig()
 
+    print(2)
+
     evaluation_result = CausalModelEvaluationResult()
+
+    print(3)
 
     if max_num_samples >= 0 and max_num_samples < data.shape[0]:
         data = data[np.random.choice(data.shape[0], data.shape[0], replace=False)]
 
+    print(4)
+
     if evaluate_causal_mechanisms:
+        print(5)
         evaluation_result.mechanism_performances = _evaluate_model_performances(
             causal_model,
             data,
@@ -375,8 +384,10 @@ def evaluate_causal_model(
             config.mechanism_evaluation_kfolds,
             config.n_jobs,
         )
+        print(6)
 
     if evaluate_invertibility_assumptions:
+        print(7)
         evaluation_result.pnl_assumptions = _evaluate_invertibility_assumptions(
             causal_model,
             data,
@@ -385,7 +396,9 @@ def evaluate_causal_model(
             config.fdr_control_method_invertible,
             config.bootstrap_runs_invertible,
         )
+        print(8)
 
+    print(9)
     if evaluate_overall_kl_divergence:
         # Normally, we need to estimate the KL divergence jointly. However, to avoid issues with high dimensional data,
         # we approximate it by taking the average over the marginal KL divergences.
@@ -397,8 +410,10 @@ def evaluate_causal_model(
                 for node in causal_model.graph.nodes
             ]
         )
+        print(10)
 
     if evaluate_causal_structure:
+        print(11)
         evaluation_result.graph_falsification = falsify_graph(
             causal_model.graph,
             data,
@@ -409,6 +424,9 @@ def evaluate_causal_model(
             n_jobs=config.n_jobs,
             allow_data_subset=False,
         )
+        print(12)
+
+    print(13)
 
     return evaluation_result
 
