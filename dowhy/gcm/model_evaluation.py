@@ -745,6 +745,8 @@ def crps(
     :return: The Continuous Ranked Probability Score.
     """
 
+    print("&1")
+
     def empirical_crps(generated_Y, observed_y):
         """Estimates \int (F(x) - 1_{x >= y})**2 dx = E[|X - y|] - 1/2 E[|X - X'|]
 
@@ -757,8 +759,12 @@ def crps(
             np.abs(np.subtract.outer(generated_Y, generated_Y))
         )
 
+    print("&2")
+
     if Y.ndim > 1 and Y.shape[1] > 1:
         raise ValueError("Y has to be one dimensional!")
+
+    print("&3")
 
     X = shape_into_2d(X)
     Y = Y.reshape(-1)
@@ -771,6 +777,8 @@ def crps(
         # categorical data with more than two classes.
         all_classes = np.unique(Y)
 
+        print("&4")
+
         for x, y in zip(X, Y):
             samples = conditional_sampling_method(np.tile(x, (num_conditional_samples, 1)))
 
@@ -780,7 +788,10 @@ def crps(
                     empirical_crps((samples == cat).astype(int), np.array(y == cat).astype(int))
                 )
             crps_values.append(np.mean(sample_categorical_crps))
+
+            print("&5")
     else:
+        print("&6")
         std_Y = 1
 
         if normalize:
@@ -789,10 +800,13 @@ def crps(
             if std_Y == 0:
                 std_Y = 1
 
+        print("&7")
+
         for x, y in zip(X, Y):
             crps_values.append(
                 empirical_crps(conditional_sampling_method(np.tile(x, (num_conditional_samples, 1))) / std_Y, y / std_Y)
             )
+        print("&8")
 
     return float(np.mean(np.array(crps_values)))
 
