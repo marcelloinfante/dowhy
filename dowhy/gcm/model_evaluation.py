@@ -504,7 +504,9 @@ def _evaluate_model_performances(
                 if categorical:
                     print("#11")
                     for baseline_mdl_factory in baseline_models_classification:
+                        print("#12")
                         tmp_classifier_mdl = baseline_mdl_factory()
+                        print("#13")
                         if (
                             isinstance(tmp_causal_mechanism, ClassifierFCM)
                             and isinstance(tmp_causal_mechanism.classifier_model, SklearnRegressionModel)
@@ -514,15 +516,20 @@ def _evaluate_model_performances(
                             # Do not compare with same model class
                             continue
 
+                        print("#14")
+
                         baseline_mechanism = ClassifierFCM(tmp_classifier_mdl)
                         baseline_mechanism.fit(parent_data[training_indices], node_data[training_indices])
+
+                        print("#15")
 
                         baseline_crps.setdefault(str(baseline_mechanism), []).append(
                             crps(parent_data[test_indices], node_data[test_indices], baseline_mechanism.draw_samples)
                         )
+                        print("#16")
                 else:
                     for baseline_mdl_factory in baseline_models_regression:
-                        print("#12")
+                        print("#17")
                         tmp_reg_mdl = baseline_mdl_factory()
                         if (
                             isinstance(tmp_causal_mechanism, PostNonlinearModel)
@@ -539,13 +546,13 @@ def _evaluate_model_performances(
                         baseline_crps.setdefault(str(baseline_mechanism), []).append(
                             crps(parent_data[test_indices], node_data[test_indices], baseline_mechanism.draw_samples)
                         )
-
+        print("#19")
         for metric in metric_evaluations:
             metric_evaluations[metric] = (
                 float(np.mean(metric_evaluations[metric])) if len(metric_evaluations[metric]) > 0 else None
             )
 
-        print("#13")
+        print("#20")
 
         count_better_performance = None
         best_baseline_performance = None
@@ -570,7 +577,7 @@ def _evaluate_model_performances(
                     best_baseline_model = k
                     best_baseline_performance = baseline_crps[k]
 
-        print("#14")
+        print("#21")
         return MechanismPerformanceResult(
             node_name=node_name,
             is_root=is_root_node(causal_model.graph, node_name),
