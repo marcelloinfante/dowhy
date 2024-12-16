@@ -441,15 +441,18 @@ def _evaluate_model_performances(
     n_jobs: int,
 ) -> Dict[Any, Tuple[bool, float, Optional[int], Optional[str], int, Optional[float]]]:
     model_performances = {}
-
+    print("#1")
     def evaluate_node(node_name, random_seed):
         set_random_seed(random_seed)
-
+        print("#2")
+        
         node_data = data[node_name].to_numpy()
         metric_evaluations = {"CRPS": [], "KL": [], "MSE": [], "NMSE": [], "R2": [], "F1": []}
         baseline_crps = {}
         categorical = is_categorical(node_data)
 
+        print("#3")
+        
         if is_root_node(causal_model.graph, node_name):
             for training_indices, test_indices in KFold(n_splits=kfolds, shuffle=True).split(node_data):
                 tmp_causal_mechanism = causal_model.causal_mechanism(node_name).clone()
@@ -461,34 +464,45 @@ def _evaluate_model_performances(
                     )
                 )
         else:
+            print("#4")
             parent_data = data[get_ordered_predecessors(causal_model.graph, node_name)].to_numpy()
+            print("#5")
 
             for training_indices, test_indices in KFold(n_splits=kfolds, shuffle=True).split(parent_data):
+                print("#6")
                 tmp_causal_mechanism = causal_model.causal_mechanism(node_name).clone()
                 tmp_causal_mechanism.fit(parent_data[training_indices], node_data[training_indices])
+                print("#7")
 
                 metric_evaluations["CRPS"].append(
                     crps(parent_data[test_indices], node_data[test_indices], tmp_causal_mechanism.draw_samples)
                 )
+                print("#8")
 
                 conditional_expectations = _estimate_conditional_expectations(
                     tmp_causal_mechanism, parent_data[test_indices], categorical, 50
                 )
+                print("#9")
                 if categorical:
                     metric_evaluations["F1"].append(
                         f1_score(node_data[test_indices], conditional_expectations, average="macro", zero_division=0)
                     )
                 else:
+                    print("---0")
                     metric_evaluations["MSE"].append(
                         mean_squared_error(node_data[test_indices], conditional_expectations)
                     )
+                    print("---1")
                     metric_evaluations["NMSE"].append(nmse(node_data[test_indices], conditional_expectations))
+                    print("---2")
                     metric_evaluations["R2"].append(r2_score(node_data[test_indices], conditional_expectations))
 
                 if not compare_mechanism_baselines:
                     continue
+                print("#10")
 
                 if categorical:
+                    print("#11")
                     for baseline_mdl_factory in baseline_models_classification:
                         tmp_classifier_mdl = baseline_mdl_factory()
                         if (
@@ -508,6 +522,7 @@ def _evaluate_model_performances(
                         )
                 else:
                     for baseline_mdl_factory in baseline_models_regression:
+                        print("#12")
                         tmp_reg_mdl = baseline_mdl_factory()
                         if (
                             isinstance(tmp_causal_mechanism, PostNonlinearModel)
@@ -529,6 +544,8 @@ def _evaluate_model_performances(
             metric_evaluations[metric] = (
                 float(np.mean(metric_evaluations[metric])) if len(metric_evaluations[metric]) > 0 else None
             )
+
+        print("#13")
 
         count_better_performance = None
         best_baseline_performance = None
@@ -553,6 +570,7 @@ def _evaluate_model_performances(
                     best_baseline_model = k
                     best_baseline_performance = baseline_crps[k]
 
+        print("#14")
         return MechanismPerformanceResult(
             node_name=node_name,
             is_root=is_root_node(causal_model.graph, node_name),
