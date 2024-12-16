@@ -344,6 +344,51 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "nparent1",
+      "name": "Nick Parente",
+      "avatar_url": "https://avatars.githubusercontent.com/u/52084137?v=4",
+      "profile": "https://github.com/nparent1",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Yangliu-SY",
+      "name": "Yangliu-SY",
+      "avatar_url": "https://avatars.githubusercontent.com/u/144334404?v=4",
+      "profile": "https://github.com/Yangliu-SY",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "kmhj13",
+      "name": "kmhj13",
+      "avatar_url": "https://avatars.githubusercontent.com/u/172297022?v=4",
+      "profile": "https://github.com/kmhj13",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "GregVS",
+      "name": "Gregory Saldanha",
+      "avatar_url": "https://avatars.githubusercontent.com/u/83143490?v=4",
+      "profile": "https://github.com/GregVS",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "vivianqin214",
+      "name": "vivianqin214",
+      "avatar_url": "https://avatars.githubusercontent.com/u/56522949?v=4",
+      "profile": "https://github.com/vivianqin214",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
