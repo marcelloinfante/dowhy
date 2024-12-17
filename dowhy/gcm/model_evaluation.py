@@ -594,18 +594,33 @@ def _evaluate_model_performances(
         )
 
     random_seeds = np.random.randint(np.iinfo(np.int32).max, size=len(causal_model.graph.nodes))
-    all_results = Parallel(n_jobs=n_jobs)(
-        delayed(evaluate_node)(node, int(random_seeds[i]))
-        for i, node in enumerate(
-            tqdm(
-                list(nx.topological_sort(causal_model.graph)),
-                position=0,
-                leave=True,
-                disable=not config.show_progress_bars,
-                desc="Evaluating causal mechanisms...",
-            )
+    
+    all_results = []
+    nodes = list(nx.topological_sort(causal_model.graph))
+    for i, node in enumerate(
+        tqdm(
+            nodes,
+            position=0,
+            leave=True,
+            disable=not config.show_progress_bars,
+            desc="Evaluating causal mechanisms..."
         )
-    )
+    ):
+        result = evaluate_node(node, int(random_seeds[i]))
+        all_results.append(result)
+    
+    # all_results = Parallel(n_jobs=1)(
+    #     delayed(evaluate_node)(node, int(random_seeds[i]))
+    #     for i, node in enumerate(
+    #         tqdm(
+    #             list(nx.topological_sort(causal_model.graph)),
+    #             position=0,
+    #             leave=True,
+    #             disable=not config.show_progress_bars,
+    #             desc="Evaluating causal mechanisms...",
+    #         )
+    #     )
+    # )
 
     return {performance_result.node_name: performance_result for performance_result in all_results}
 
